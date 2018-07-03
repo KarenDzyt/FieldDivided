@@ -2,14 +2,14 @@
 clear all;
 
  %从excel中读取数据 
- data='t';
+ data='t1';
  data1=[data,'.xlsx'];
  [a,txt]=xlsread(data1); %[num, txt]= xlsread(filename, ...)
  lon=a(:,2);
  lat=a(:,1);
  
  %幅宽
- width =5;
+ width =8;
  
  global numOfPoints;
  numOfPoints = length(lon);
@@ -52,25 +52,37 @@ Field2 = [x(2),y(2)];
 Field3 = [x(3),y(3)];
 Field4 = [x(4),y(4)];
 Field =[Field1;Field2;Field3;Field4];
-scatter(Field(:,1),Field(:,2));
-A = [x(5),y(5)];
-B = [x(6),y(6)];
-[r1,r3] = nearorfar_Point(A(1),A(2),Field(:,1),Field(:,2));
-[r2,r4] = nearorfar_Point(B(1),B(2),Field(:,1),Field(:,2));
+
+A0 = [x(5),y(5)];
+B0 = [x(6),y(6)];
+[r1,r3] = nearorfar_Point(A0(1),A0(2),Field(:,1),Field(:,2));
+[r2,r4] = nearorfar_Point(B0(1),B0(2),Field(:,1),Field(:,2));
 Field = [Field(r1,:);Field(r2,:);Field(r3,:);Field(r4,:)];
+
+%这个方法匹配不上
+% if(r1==1)
+% else if(r1==2)
+%         Field = [Field(2,:);Field(3,:);Field(4,:);Field(1,:)];
+%     else if(r1==3)
+%             Field = [Field(3,:);Field(4,:);Field(1,:);Field(2,:)];
+%         else
+%             Field = [Field(4,:);Field(1,:);Field(2,:);Field(3,:)];
+%         end
+%     end
+% end
 
 
 %AB线平移到基准线
 angle = atan2(y(5)-y(6),x(5)-x(6))- pi/2;
-ax1 = x(5)+width*cos(angle);
-ay1 = y(5)+width*sin(angle);
-bx1 = x(6)+width*cos(angle);
-by1 = y(6)+width*sin(angle);
+ax1 = x(5)+width*cos(angle)/2;
+ay1 = y(5)+width*sin(angle)/2;
+bx1 = x(6)+width*cos(angle)/2;
+by1 = y(6)+width*sin(angle)/2;
 
-ax2 = x(5)-width*cos(angle);
-ay2 = y(5)-width*sin(angle);
-bx2 = x(6)-width*cos(angle);
-by2 = y(6)-width*sin(angle);
+ax2 = x(5)-width*cos(angle)/2;
+ay2 = y(5)-width*sin(angle)/2;
+bx2 = x(6)-width*cos(angle)/2;
+by2 = y(6)-width*sin(angle)/2;
 
 da1 = distance(ax1,ay1,Field(1,1),Field(1,2));
 da2 = distance(ax2,ay2,Field(1,1),Field(1,2));
@@ -91,6 +103,8 @@ yp = Polygon(:,2);
 %农田包络矩形
 Rect =[rectx,recty];
 
+plot(rectx,recty,'r');
+hold on;
 sx1 = strip(:,1);sx2 = strip(:,3);
 sx3 = strip(:,5);sx4 = strip(:,7);
 sy1 = strip(:,2);sy2 = strip(:,4);
@@ -139,7 +153,10 @@ scatter(A(1),A(2));
 hold on;
 scatter(B(1),B(2));
 hold on;
-
+scatter(A0(1),A0(2));
+hold on;
+scatter(B0(1),B0(2));
+hold on;
 
 
 
