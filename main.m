@@ -2,14 +2,16 @@
 clear all;
 
  %从excel中读取数据 
- data='t1';
+ data='003';
  data1=[data,'.xlsx'];
  [a,txt]=xlsread(data1); %[num, txt]= xlsread(filename, ...)
  lon=a(:,2);
  lat=a(:,1);
  
- %幅宽
- width =8;
+ %划分条带幅宽
+ width = 8;
+ %基准线来源工序幅宽
+ width0 = 0;
  
  global numOfPoints;
  numOfPoints = length(lon);
@@ -74,15 +76,15 @@ Field = [Field(r1,:);Field(r2,:);Field(r3,:);Field(r4,:)];
 
 %AB线平移到基准线
 angle = atan2(y(5)-y(6),x(5)-x(6))- pi/2;
-ax1 = x(5)+width*cos(angle)/2;
-ay1 = y(5)+width*sin(angle)/2;
-bx1 = x(6)+width*cos(angle)/2;
-by1 = y(6)+width*sin(angle)/2;
+ax1 = x(5)+width0*cos(angle)/2;
+ay1 = y(5)+width0*sin(angle)/2;
+bx1 = x(6)+width0*cos(angle)/2;
+by1 = y(6)+width0*sin(angle)/2;
 
-ax2 = x(5)-width*cos(angle)/2;
-ay2 = y(5)-width*sin(angle)/2;
-bx2 = x(6)-width*cos(angle)/2;
-by2 = y(6)-width*sin(angle)/2;
+ax2 = x(5)-width0*cos(angle)/2;
+ay2 = y(5)-width0*sin(angle)/2;
+bx2 = x(6)-width0*cos(angle)/2;
+by2 = y(6)-width0*sin(angle)/2;
 
 da1 = distance(ax1,ay1,Field(1,1),Field(1,2));
 da2 = distance(ax2,ay2,Field(1,1),Field(1,2));
@@ -94,17 +96,25 @@ else
     B = [bx1,by1]; 
 end
 
+%AB线与农田边界构成的新四边形
 Polygon = [A;B;Field(3,:);Field(4,:)];
 xp = Polygon(:,1);
 yp = Polygon(:,2);
 
 %农田条带划分
-[rectx,recty,strip] = Strip(xp,yp,width);
+[rectx,recty,strip,p,Px,Py] = Strip(xp,yp,width);
 %农田包络矩形
 Rect =[rectx,recty];
 
+
+
+%绘制外接矩形
 plot(rectx,recty,'r');
 hold on;
+scatter(Px,Py,1);
+hold on;
+
+
 sx1 = strip(:,1);sx2 = strip(:,3);
 sx3 = strip(:,5);sx4 = strip(:,7);
 sy1 = strip(:,2);sy2 = strip(:,4);
