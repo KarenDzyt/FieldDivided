@@ -1,4 +1,4 @@
-function [rectx,recty,strip,p,Px,Py] = Strip(x,y,width)
+function [rectx,recty,strip,px,py,Px,Py] = Strip(x,y,width)
 
 % will need a 2x2 rotation matrix through an angle theta
 Rmat = @(theta) [cos(theta) sin(theta);-sin(theta) cos(theta)];
@@ -117,25 +117,28 @@ edgeangles = unique(mod(edgeangles,pi/2));
           N = numOfStrips;
       end
       
-      %¹ì¼£µã¾ØÕó
+      %´æ´¢¹ì¼£µã
       m = 1;
-      p = cell(N,numOfTrackP);
+      %ÔªÏ¸°û×é´æ´¢
+      px = cell(1,N);
+      py = cell(1,N);
       x0 = zeros(1,N);
       y0 = zeros(1,N);
+      %¾ØÕó´æ´¢
       Px=zeros(1,N * numOfTrackP);
       Py=zeros(1,N * numOfTrackP);
         for i=1:N
               x0(i)= (x1(i)+x4(i))/2 ;
               y0(i)= (y1(i)+y4(i))/2 ;
           for j=1:numOfTrackP
-              p{i,j}(1)= x0(i)+ d0 * cos(ab_angle) * (j-1);
-              p{i,j}(2)= y0(i)+ d0 * sin(ab_angle) * (j-1);
-              Px(m)=p{i,j}(1);
-              Py(m)=p{i,j}(2);
+              px{i}(j)= x0(i)+ d0 * cos(ab_angle) * (j-1);
+              py{i}(j)= y0(i)+ d0 * sin(ab_angle) * (j-1);
+              Px(m)=px{i}(j);
+              Py(m)=py{i}(j);
               m = m+1;
           end
         end
-      
+        
 end
 
 function [d]=distance(x1,y1,x2,y2)

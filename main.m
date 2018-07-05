@@ -102,17 +102,38 @@ xp = Polygon(:,1);
 yp = Polygon(:,2);
 
 %农田条带划分
-[rectx,recty,strip,p,Px,Py] = Strip(xp,yp,width);
+[rectx,recty,strip,px,py,Px,Py] = Strip(xp,yp,width);
 %农田包络矩形
 Rect =[rectx,recty];
 
+%筛除不在农田内的轨迹点
 
+%整体筛除
+% xv = [xp(1),xp(2),xp(3),xp(4),xp(1)];
+% yv = [yp(1),yp(2),yp(3),yp(4),yp(1)];
+% in=inpolygon(Px,Py,xv,yv);
+
+%绘制外接矩形
+% plot(rectx,recty,'r');
+% hold on;
+% scatter(Px,Py,1,in);
+% hold on;
+
+%分段筛除
+xv = [xp(1),xp(2),xp(3),xp(4),xp(1)];
+yv = [yp(1),yp(2),yp(3),yp(4),yp(1)];
+in=inpolygon(Px,Py,xv,yv);
+for i=1:N
+    
+end
 
 %绘制外接矩形
 plot(rectx,recty,'r');
 hold on;
-scatter(Px,Py,1);
+scatter(Px,Py,1,in);
 hold on;
+
+
 
 
 sx1 = strip(:,1);sx2 = strip(:,3);
