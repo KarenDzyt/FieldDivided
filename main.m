@@ -141,12 +141,34 @@ for i=1:n1
     end
 end
 
+%刨除10S的轨迹点用来生成调头点
+for i=1:n1
+    for j=1:10
+     nt = length(px{i});
+     px{i}(1)=[];
+     py{i}(1)=[];
+     px{i}(nt-1)=[];
+     py{i}(nt-1)=[];
+    end
+end
+
 %绘制轨迹
 plot(xv,yv,'r');
 hold on;
 for i=1:n1
 scatter(px{i},py{i},1,'g');
 hold on;
+end
+
+%轨迹点UTM转为WGS84
+Track = cell(1,n1);
+for i=1:n1
+    nt1 = length(px{i});
+    S_unit = ones(nt1,1);
+    UTMCentralMeridian_S = UTMCentralMeridian_result * S_unit; 
+    [px1,py1] = UTMXYToLatLon(px{i},py{i},s_or_n);
+    [s_log,s_lat] = MapXYToLatLon(px1,py1,UTMCentralMeridian_S);
+    Track_LatLon{i} = output(s_log,s_lat);
 end
 
 sx1 = strip(:,1);sx2 = strip(:,3);
