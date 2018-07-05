@@ -2,14 +2,14 @@
 clear all;
 
  %从excel中读取数据 
- data='001';
+ data='003';
  data1=[data,'.xlsx'];
  [a,txt]=xlsread(data1); %[num, txt]= xlsread(filename, ...)
  lon=a(:,2);
  lat=a(:,1);
  
  %划分条带幅宽
- width = 20;
+ width = 8;
  %基准线来源工序幅宽
  width0 = 0;
  
@@ -109,8 +109,8 @@ Rect =[rectx,recty];
 %筛除不在农田内的轨迹点
 
 %整体筛除
-% xv = [x(1),x(2),x(3),x(4),x(1)];
-% yv = [y(1),y(2),y(3),y(4),y(1)];
+% xv = [xp(1),xp(2),xp(3),xp(4),xp(1)];
+% yv = [yp(1),yp(2),yp(3),yp(4),yp(1)];
 % in=inpolygon(Px,Py,xv,yv);
 
 %绘制外接矩形
@@ -120,17 +120,15 @@ Rect =[rectx,recty];
 % hold on;
 
 %分段筛除
-xv = [x(1),x(2),x(3),x(4),x(1)];
-yv = [y(1),y(2),y(3),y(4),y(1)];
+xv = [xp(1),xp(2),xp(3),xp(4),xp(1)];
+yv = [yp(1),yp(2),yp(3),yp(4),yp(1)];
 n1 = length(px);
 n2 = length(px{1});
 in=cell(1,n1);
 
 for i=1:n1
     in{i}=inpolygon(px{i},py{i},xv,yv);
-    %记录轨迹编号
     no_track(i) = i;
-    %防止删除元素造成索引混乱
     z = 0;
     for j=1:n2
        if in{i}(j)==0
@@ -145,7 +143,7 @@ end
 plot(xv,yv,'r');
 hold on;
 for i=1:n1
-scatter(px{i},py{i},1,'g');
+scatter(px{i},py{i},1);
 hold on;
 end
 
