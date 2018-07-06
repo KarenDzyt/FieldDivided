@@ -9,7 +9,7 @@ clear all;
  lat=a(:,1);
  
  %划分条带幅宽
- width = 20;
+ width =10;
  %基准线来源工序幅宽
  width0 = 0;
  
@@ -151,7 +151,10 @@ for i=1:n1
      py{i}(nt-1)=[];
     end
 end
-
+[ux,uy] = U_turn(px{1}(1),py{1}(1),px{2}(1),py{2}(1),5,width,20);
+%取实部
+ux_r = real(ux);
+uy_r = real(uy);
 %绘制轨迹
 plot(xv,yv,'r');
 hold on;
@@ -159,9 +162,14 @@ for i=1:n1
 scatter(px{i},py{i},1,'g');
 hold on;
 end
+scatter(ux_r,uy_r,1,'b');
+hold on;
+
+
+
 
 %轨迹点UTM转为WGS84
-Track = cell(1,n1);
+Track_LatLon = cell(1,n1);
 for i=1:n1
     nt1 = length(px{i});
     S_unit = ones(nt1,1);
@@ -224,5 +232,15 @@ hold on;
 scatter(B0(1),B0(2));
 hold on;
 
+m = 0;
+for i=1:n1
+    n2(i) =length(Track_LatLon{i});
+for j=1:n2(i)
+    m = m+1;
+    output(m,1)= Track_LatLon{i}(i,1);
+    output(m,2)= Track_LatLon{i}(i,2);
+end
+end  
+xlswrite('output.xlsx',output);
 
 
