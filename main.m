@@ -9,7 +9,7 @@ clear all;
  lat=a(:,1);
  
  %划分条带幅宽
- width =10;
+ width =15;
  %基准线来源工序幅宽
  width0 = 0;
  
@@ -151,7 +151,7 @@ for i=1:n1
      py{i}(nt-1)=[];
     end
 end
-[ux,uy] = U_turn(px{1}(1),py{1}(1),px{2}(1),py{2}(1),5,width,20);
+[ux,uy] = U_turn(px{1}(1),py{1}(1),px{2}(1),py{2}(1),8,width,20);
 %取实部
 ux_r = real(ux);
 uy_r = real(uy);
@@ -240,7 +240,7 @@ for j=1:n2(i)
     output(m,1)= Track_LatLon{i}(i,1);
     output(m,2)= Track_LatLon{i}(i,2);
 end
-end  
+end  x
 xlswrite('output.xlsx',output);
 
 

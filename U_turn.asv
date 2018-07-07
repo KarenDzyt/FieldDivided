@@ -32,14 +32,10 @@ end
        y0down = -1/k_12*x0down + b12;
    end
 %判断原点的位置
-if y0up<y12
+if y0up>y_12
+else
     t1 = x0up;
-    t2 = y0up;
-    y0up = y0down;
-    x0up = x0down;
-    x0down = t1;
-    y0down = t2;
-end
+    t = y0up;
 if theta<180
     x0 = x0up;
     y0 = y0up;
