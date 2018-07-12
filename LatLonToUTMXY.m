@@ -20,7 +20,7 @@
 % */
 
 function [x,y,southhemi] = LatLonToUTMXY(x1,y1)
-    global numOfPoints;
+    numOfPoints = length(x1);
     global UTMScaleFactor;
     southhemi=zeros(numOfPoints,1);
 % 	/* Adjust easting and northing for UTM system. */

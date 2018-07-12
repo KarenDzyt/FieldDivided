@@ -25,7 +25,7 @@
 function [x1,y1] = MapLatLonToXY( lon_radian,lat_radian,UTMCentralMeridian)
     global sm_a;  
     global sm_b;
-    global numOfPoints;
+    numOfPoints = length(lon_radian);
     
 	N=zeros(numOfPoints,1);t=zeros(numOfPoints,1); t2=zeros(numOfPoints,1); l=zeros(numOfPoints,1);
 	l3coef=zeros(numOfPoints,1); l4coef=zeros(numOfPoints,1); l5coef=zeros(numOfPoints,1); l6coef=zeros(numOfPoints,1); l7coef=zeros(numOfPoints,1);l8coef=zeros(numOfPoints,1);

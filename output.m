@@ -4,5 +4,5 @@ function [P_latlon] = output(p_log,p_lat)
  
  P_lat = DegToRad(p_lat);
  P_lon = DegToRad(p_log);
- P_latlon=[P_lon,P_lat];
+ P_latlon = [P_lon ,P_lat];
 end
