@@ -8,11 +8,12 @@ clear all;
  lon=a(:,2);
  lat=a(:,1);
  
- width =10; %划分条带幅宽
+ width =6.25; %划分条带幅宽
  width0 = 0.0; %基准线来源工序幅宽
  r = 5;%调头半径
- n0 = 2; %工序内车辆数
- 
+ n0 = 3; %工序内车辆数
+ frequency =1;%上传频率
+ v = 2.5;%作业速度
 global numOfPoints;
 numOfPoints = length(lon);
  
@@ -57,7 +58,7 @@ xp = Polygon(:,1);
 yp = Polygon(:,2);
 
 %农田条带划分
-[rectx,recty,strip,px,py,Px,Py] = Strip(xp,yp,width);
+[rectx,recty,strip,px,py,Px,Py] = Strip(xp,yp,width,v,frequency);
 %农田包络矩形
 Rect =[rectx,recty];
 
@@ -89,7 +90,7 @@ for i=1:n1
 end
 
 %刨除时间为t_turn的轨迹点用来生成调头点
-t_turn = 10.0;
+t_turn = fix(10.0/frequency);
 for i=1:n1
     for j=1:t_turn
          nt = length(px{i});
@@ -102,15 +103,15 @@ end
 
 [track_x1,track_y1] = Track(n0,1,px,py,width,r,t_turn,'r');
 [track_x2,track_y2] = Track(n0,2,px,py,width,r,t_turn,'black');
-% [track_x3,track_y3] = Track(n0,3,px,py,width,r,t_turn,'g');
+[track_x3,track_y3] = Track(n0,3,px,py,width,r,t_turn,'g');
 
 [track1] = TrackUTMtoWGS84(track_x1,track_y1,UTMCentralMeridian_result,s_or_n);
 [track2] = TrackUTMtoWGS84(track_x2,track_y2,UTMCentralMeridian_result,s_or_n);
-% [track3] = TrackUTMtoWGS84(track_x3,track_y3,UTMCentralMeridian_result,s_or_n);
+[track3] = TrackUTMtoWGS84(track_x3,track_y3,UTMCentralMeridian_result,s_or_n);
 
 xlswrite('track1.xlsx',track1);
 xlswrite('track2.xlsx',track2);
-% xlswrite('track3.xlsx',track3);
+xlswrite('track3.xlsx',track3);
 
 %绘图
 Draw_Strips;

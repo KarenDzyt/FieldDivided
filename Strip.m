@@ -1,4 +1,4 @@
-function [rectx,recty,strip,px,py,Px,Py] = Strip(x,y,width)
+function [rectx,recty,strip,px,py,Px,Py] = Strip(x,y,width,v,frequency)
 
 % will need a 2x2 rotation matrix through an angle theta
 Rmat = @(theta) [cos(theta) sin(theta);-sin(theta) cos(theta)];
@@ -33,7 +33,8 @@ edgeangles = unique(mod(edgeangles,pi/2));
         
         L = width;
         BC = distance(rectx(2),recty(2),rectx(3),recty(3));
-
+%       AB = distance(rectx(1),recty(1),rectx(2),recty(2));
+        
         laststrip = mod(BC,L);
         numOfStrips = fix(BC/L);
         
@@ -106,8 +107,6 @@ edgeangles = unique(mod(edgeangles,pi/2));
       strip = [p1,p2,p3,p4];
  
       %Éú³É¹ì¼£µã
-      v = 2.0;
-      frequency = 1.0;
       d0 = frequency * v;
       numOfTrackP = fix(distance(rectx(2),recty(2),rectx(1),recty(1))/v) ;
       

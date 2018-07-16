@@ -1,8 +1,4 @@
 function [ux,uy] = U_turndown(x1,y1,x2,y2,r,width,n)
-%圆半径过小时
-if r<width/2
-    r = width/2;
-end
 
 %计算圆的参数方程
 d_12 = distance(x1,y1,x2,y2);
@@ -13,8 +9,17 @@ ak = atand(k_);
 %12的中心垂线方程
 x12 = (x2+x1)/2;
 y12 = (y2+y1)/2;
+
+%圆半径过小时
+if r<d_12/2
+    r = d_12/2;
+    flag0 =1;
+else
+    flag0 =0;
+end
 %圆心角(第一象限)
-theta = 2*asind(d_12/2/r);
+do = d_12/2/r;
+theta =  2*asind(do);
 
 % 调头半径过小时
 flag1 = 0;
@@ -24,42 +29,48 @@ flag1 = 1;
 end
 
 %圆心坐标
-   if k_12 == 0
-      x0up = x12;
-      x0down = x12;
-      y0down = y12 - abs(r*cosd(theta/2));
-      y0up= y12 + abs(r*cosd(theta/2));
-   else
-       b12 = y12 - x12 * (-1/k_12);
-       x0up = x12 + abs(r*cosd(theta/2)*cosd(ak));
-       x0down = x12 - abs(r*cosd(theta/2)*cosd(ak));
-       y0up = -1/k_12*x0up + b12;
-       y0down = -1/k_12*x0down + b12;
-   end
-%判断原点的位置
+if flag0==1
+   x0 = x12;
+   y0 = y12;
+else
+       if k_12 == 0
+          x0up = x12;
+          x0down = x12;
+          y0down = y12 - abs(r*cosd(theta/2));
+          y0up= y12 + abs(r*cosd(theta/2));
+       else
 
-if y0up<y12
-    t1 = x0up;
-    t2 = y0up;
-    y0up = y0down;
-    x0up = x0down;
-    x0down = t1;
-    y0down = t2;
+           b12 = y12 - x12 * (-1/k_12);
+           x0up = x12 + abs(r*cosd(theta/2)*cosd(ak));
+           x0down = x12 - abs(r*cosd(theta/2)*cosd(ak));
+           y0up = -1/k_12*x0up + b12;
+           y0down = -1/k_12*x0down + b12;
+       end
+       
+       %判断原点的位置
+        if y0up<y12
+            t1 = x0up;
+            t2 = y0up;
+            y0up = y0down;
+            x0up = x0down;
+            x0down = t1;
+            y0down = t2;
+        end
+        
+      if theta<180
+          x0 = x0up;
+          y0 = y0up;
+      else
+          x0 = x0down;
+          y0 = y0down;
+      end
+
 end
-
-  if theta<180
-      x0 = x0up;
-      y0 = y0up;
-  else
-      x0 = x0down;
-      y0 = y0down;
-  end
-
   %1，2对应参数方程的横坐标
   theta1 = acosd((x1-x0)/r);
   theta11 = 360 - theta1;
-  theta2 = acosd((x2-x0)/r);
-  theta21 = 360 - theta2;
+  theta2 =  acosd((x2-x0)/r);
+  theta21 =  360 - theta2;
   theta0 = theta/(n+1);
   flag = 1;
   %判断是否为灯泡型  
@@ -96,8 +107,8 @@ end
       end
   end
 
-%     scatter(ux,uy,1,'black');
-%     hold on;
+    scatter(ux,uy,1,'black');
+    hold on;
 
 end
 
