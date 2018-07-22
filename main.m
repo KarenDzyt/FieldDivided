@@ -12,8 +12,8 @@ clear all;
  width0 = 0.0; %基准线来源工序幅宽
  r = 5;%调头半径
  n0 = 3; %工序内车辆数
- frequency =1;%上传频率
- v = 2.5;%作业速度
+ frequency =2;%上传频率
+ v = 5;%作业速度
 global numOfPoints;
 numOfPoints = length(lon);
  
@@ -109,9 +109,14 @@ end
 [track2] = TrackUTMtoWGS84(track_x2,track_y2,UTMCentralMeridian_result,s_or_n);
 [track3] = TrackUTMtoWGS84(track_x3,track_y3,UTMCentralMeridian_result,s_or_n);
 
+[track1] = WGS84ToGCJ02(track1);
+[track2] = WGS84ToGCJ02(track2);
+[track3] = WGS84ToGCJ02(track3);
+
 xlswrite('track1.xlsx',track1);
 xlswrite('track2.xlsx',track2);
 xlswrite('track3.xlsx',track3);
+
 
 %绘图
 Draw_Strips;

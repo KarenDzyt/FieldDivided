@@ -20,8 +20,8 @@ for i=1:n_up
     L2 = length(px{no+(2*i-1)*n0}); 
     [ux{i},uy{i}] = U_turnup(px{no+2*(i-1)*n0}(L1),py{no+2*(i-1)*n0}(L1),px{no+(2*i-1)*n0}(L2),py{no+(2*i-1)*n0}(L2),r,width,2*t_turn);
     %取实部
-    ux_r{2*i-1} = real(ux{i}).';
-    uy_r{2*i-1} = real(uy{i}).';
+    ux_r{2*i-1} = fliplr(real(ux{i}).');
+    uy_r{2*i-1} = fliplr(real(uy{i}).');
 end
 
 for i=1:n_down
@@ -29,6 +29,9 @@ for i=1:n_down
     %取实部
     ux_r{2*i} = real(ux{i}).';
     uy_r{2*i} = real(uy{i}).';
+    %重编轨迹顺序
+    px{no+n0*(2*i-1)}=fliplr(px{no+n0*(2*i-1)});
+    py{no+n0*(2*i-1)}=fliplr(py{no+n0*(2*i-1)});
 end
 
 %调头轨迹与耕作轨迹连接
@@ -41,8 +44,9 @@ for i=1:a3
 end
 track_x = [track_x px{no+n0*a3}];
 track_y = [track_y py{no+n0*a3}];
-
 scatter(track_x,track_y,5,color,'filled');
-hold on;
-
+% for i=1:length(track_x)
+% scatter(track_x(i),track_y(i),5,color,'filled');
+% hold on;
+% end
 end
