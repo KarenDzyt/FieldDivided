@@ -107,8 +107,8 @@ end
       end
   end
 
-    scatter(ux,uy,1,'black');
-    hold on;
+%     scatter(ux,uy,1,'black');
+%     hold on;
 
 end
 

@@ -8,12 +8,12 @@ clear all;
  lon=a(:,2);
  lat=a(:,1);
  
- width =6.25; %划分条带幅宽
+ width =3.25; %划分条带幅宽
  width0 = 0.0; %基准线来源工序幅宽
- r = 5;%调头半径
- n0 = 3; %工序内车辆数
- frequency =2;%上传频率
- v = 5;%作业速度
+ r = 3;%调头半径
+ n0 = 2; %工序内车辆数
+ frequency =1;%上传频率
+ v = 3;%作业速度
 global numOfPoints;
 numOfPoints = length(lon);
  
@@ -100,22 +100,19 @@ for i=1:n1
          py{i}(nt-1)=[];
     end
 end
-
-[track_x1,track_y1] = Track(n0,1,px,py,width,r,t_turn,'r');
-[track_x2,track_y2] = Track(n0,2,px,py,width,r,t_turn,'black');
-[track_x3,track_y3] = Track(n0,3,px,py,width,r,t_turn,'g');
-
-[track1] = TrackUTMtoWGS84(track_x1,track_y1,UTMCentralMeridian_result,s_or_n);
-[track2] = TrackUTMtoWGS84(track_x2,track_y2,UTMCentralMeridian_result,s_or_n);
-[track3] = TrackUTMtoWGS84(track_x3,track_y3,UTMCentralMeridian_result,s_or_n);
-
-[track1] = WGS84ToGCJ02(track1);
-[track2] = WGS84ToGCJ02(track2);
-[track3] = WGS84ToGCJ02(track3);
-
-xlswrite('track1.xlsx',track1);
-xlswrite('track2.xlsx',track2);
-xlswrite('track3.xlsx',track3);
+track=[];
+head=cell(1,2);
+head{1,1}='lon';
+head{1,2}='lat';
+for i=1:n0
+[track{i}(:,1),track{i}(:,2)] = Track(n0,i,px,py,width,r,t_turn,'r');
+[track{i}] = TrackUTMtoWGS84(track{i}(:,1),track{i}(:,2),UTMCentralMeridian_result,s_or_n);
+[track{i}] = WGS84ToGCJ02(track{i});
+data=['track',num2str(i),'.xlsx'];
+xlswrite(data,head(1,1),1,'A1');
+xlswrite(data,head(1,2),1,'B1');
+xlswrite(data,track{i},1,'A2');
+end
 
 
 %绘图
