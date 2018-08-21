@@ -33,7 +33,7 @@ edgeangles = unique(mod(edgeangles,pi/2));
         
         L = width;
         BC = distance(rectx(2),recty(2),rectx(3),recty(3));
-%       AB = distance(rectx(1),recty(1),rectx(2),recty(2));
+        AB = distance(rectx(1),recty(1),rectx(2),recty(2));
         
         laststrip = mod(BC,L);
         numOfStrips = fix(BC/L);

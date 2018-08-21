@@ -8,12 +8,12 @@ clear all;
  lon=a(:,2);
  lat=a(:,1);
  
- width =3.25; %划分条带幅宽
- width0 = 0.0; %基准线来源工序幅宽
+ width =3; %划分条带幅宽
+ width0 = 6; %基准线来源工序幅宽
  r = 3;%调头半径
  n0 = 2; %工序内车辆数
- frequency =1;%上传频率
- v = 3;%作业速度
+ frequency =2;%上传频率
+ v = 1.7;%作业速度
 global numOfPoints;
 numOfPoints = length(lon);
  
@@ -88,18 +88,26 @@ for i=1:n1
        end
     end
 end
+%删除空矩阵
+id = cellfun('length',px);
+px(id==0)=[];
+py(id==0)=[];
 
 %刨除时间为t_turn的轨迹点用来生成调头点
+n1 = length(px);
 t_turn = fix(10.0/frequency);
-for i=1:n1
-    for j=1:t_turn
-         nt = length(px{i});
-         px{i}(1)=[];
-         py{i}(1)=[];
-         px{i}(nt-1)=[];
-         py{i}(nt-1)=[];
-    end
+for i=1:n1    
+        for j=1:t_turn
+             nt = length(px{i});
+             px{i}(1)=[];
+             py{i}(1)=[];
+             px{i}(nt-1)=[];
+             py{i}(nt-1)=[];
+        end
+
 end
+
+%多辆车轨迹分别写入excel
 track=[];
 head=cell(1,2);
 head{1,1}='lon';
@@ -114,12 +122,17 @@ xlswrite(data,head(1,2),1,'B1');
 xlswrite(data,track{i},1,'A2');
 end
 
+%提取一段轨迹点首末点
+ax = [px{1}(1);px{1}(length(px{1}))];
+ay = [py{1}(1);py{1}(length(py{1}))];
+scatter(ax,ay,50,'black');
+hold on;
 
 %绘图
 Draw_Strips;
 
-%WGS84轨迹点输出
-%Track_Output;
+%WGS84直线轨迹点输出
+Track_Output;
 
 % 条带UTM转为WGS84
 Strip_Output;
