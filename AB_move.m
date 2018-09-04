@@ -19,3 +19,11 @@ else
     A = [ax1,ay1];
     B = [bx1,by1]; 
 end
+
+%基准线平移后得到的AB线转WGS84
+[A_latlon] = UTMtoWGS84(A(1),A(2),UTMCentralMeridian_result,s_or_n);
+[B_latlon] = UTMtoWGS84(B(1),B(2),UTMCentralMeridian_result,s_or_n);
+
+%写入excel
+xlswrite(data1,A_latlon,'A7:B7');
+xlswrite(data1,B_latlon,'A8:B8');

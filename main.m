@@ -2,14 +2,15 @@
 clear all;
  
 %从excel中读取数据 
- data='001';
+ data='0904';
  data1=[data,'.xlsx'];
  [a,txt]=xlsread(data1); %[num, txt]= xlsread(filename, ...)
- lon=a(:,2);
- lat=a(:,1);
+ lon=a(:,1);
+ lat=a(:,2);
  
- width =3; %划分条带幅宽
- width0 = 6; %基准线来源工序幅宽
+ 
+ width =10; %划分条带幅宽
+ width0 = 10; %基准线来源工序幅宽
  r = 3;%调头半径
  n0 = 2; %工序内车辆数
  frequency =2;%上传频率
@@ -45,7 +46,7 @@ UTMCentralMeridian =(-183 + (zone * 6)) / 180 * pi;
 [x,y,southhemi] = LatLonToUTMXY(x1,y1);
 %农田内的点默认在同一个半球，公用中央经线
 s_or_n = southhemi(1);
-UTMCentralMeridian_result = UTMCentralMeridian(1);
+UTMCentralMeridian_result= UTMCentralMeridian(1);
 
 %对农田顶点进行排序
 FieldSort;
@@ -62,77 +63,77 @@ yp = Polygon(:,2);
 %农田包络矩形
 Rect =[rectx,recty];
 
-%筛除不在农田内的轨迹点
-
-%整体筛除
+% %筛除不在农田内的轨迹点
+% 
+% %整体筛除
+% % xv = [x(1),x(2),x(3),x(4),x(1)];
+% % yv = [y(1),y(2),y(3),y(4),y(1)];
+% % in=inpolygon(Px,Py,xv,yv);
+% 
+% %分段筛除
 % xv = [x(1),x(2),x(3),x(4),x(1)];
 % yv = [y(1),y(2),y(3),y(4),y(1)];
-% in=inpolygon(Px,Py,xv,yv);
-
-%分段筛除
-xv = [x(1),x(2),x(3),x(4),x(1)];
-yv = [y(1),y(2),y(3),y(4),y(1)];
-n1 = length(px);
-n2 = length(px{1});
-in=cell(1,n1);
-
-for i=1:n1
-    in{i}=inpolygon(px{i},py{i},xv,yv);
-    no_track(i) = i; %记录轨迹编号
-    z = 0; %防止删除元素造成索引混乱
-    for j=1:n2
-       if in{i}(j)==0
-           px{i}(j-z)=[];
-           py{i}(j-z)=[];
-           z = z+1;
-       end
-    end
-end
-%删除空矩阵
-id = cellfun('length',px);
-px(id==0)=[];
-py(id==0)=[];
-
-%刨除时间为t_turn的轨迹点用来生成调头点
-n1 = length(px);
-t_turn = fix(10.0/frequency);
-for i=1:n1    
-        for j=1:t_turn
-             nt = length(px{i});
-             px{i}(1)=[];
-             py{i}(1)=[];
-             px{i}(nt-1)=[];
-             py{i}(nt-1)=[];
-        end
-
-end
-
-%多辆车轨迹分别写入excel
-track=[];
-head=cell(1,2);
-head{1,1}='lon';
-head{1,2}='lat';
-for i=1:n0
-[track{i}(:,1),track{i}(:,2)] = Track(n0,i,px,py,width,r,t_turn,'r');
-[track{i}] = TrackUTMtoWGS84(track{i}(:,1),track{i}(:,2),UTMCentralMeridian_result,s_or_n);
-[track{i}] = WGS84ToGCJ02(track{i});
-data=['track',num2str(i),'.xlsx'];
-xlswrite(data,head(1,1),1,'A1');
-xlswrite(data,head(1,2),1,'B1');
-xlswrite(data,track{i},1,'A2');
-end
-
-%提取一段轨迹点首末点
-ax = [px{1}(1);px{1}(length(px{1}))];
-ay = [py{1}(1);py{1}(length(py{1}))];
-scatter(ax,ay,50,'black');
-hold on;
+% n1 = length(px);
+% n2 = length(px{1});
+% in=cell(1,n1);
+% 
+% for i=1:n1
+%     in{i}=inpolygon(px{i},py{i},xv,yv);
+%     no_track(i) = i; %记录轨迹编号
+%     z = 0; %防止删除元素造成索引混乱
+%     for j=1:n2
+%        if in{i}(j)==0
+%            px{i}(j-z)=[];
+%            py{i}(j-z)=[];
+%            z = z+1;
+%        end
+%     end
+% end
+% %删除空矩阵
+% id = cellfun('length',px);
+% px(id==0)=[];
+% py(id==0)=[];
+% 
+% %刨除时间为t_turn的轨迹点用来生成调头点
+% n1 = length(px);
+% t_turn = fix(10.0/frequency);
+% for i=1:n1    
+%         for j=1:t_turn
+%              nt = length(px{i});
+%              px{i}(1)=[];
+%              py{i}(1)=[];
+%              px{i}(nt-1)=[];
+%              py{i}(nt-1)=[];
+%         end
+% 
+% end
+% 
+% %多辆车轨迹分别写入excel
+% track=[];
+% head=cell(1,2);
+% head{1,1}='lon';
+% head{1,2}='lat';
+% for i=1:n0
+% [track{i}(:,1),track{i}(:,2)] = Track(n0,i,px,py,width,r,t_turn,'r');
+% [track{i}] = TrackUTMtoWGS84(track{i}(:,1),track{i}(:,2),UTMCentralMeridian_result,s_or_n);
+% [track{i}] = WGS84ToGCJ02(track{i});
+% data=['track',num2str(i),'.xlsx'];
+% xlswrite(data,head(1,1),1,'A1');
+% xlswrite(data,head(1,2),1,'B1');
+% xlswrite(data,track{i},1,'A2');
+% end
+% 
+% %提取一段轨迹点首末点
+% ax = [px{1}(1);px{1}(length(px{1}))];
+% ay = [py{1}(1);py{1}(length(py{1}))];
+% scatter(ax,ay,50,'black');
+% hold on;
 
 %绘图
 Draw_Strips;
 
-%WGS84直线轨迹点输出
-Track_Output;
+% %WGS84直线轨迹点输出
+% Track_Output;
 
 % 条带UTM转为WGS84
 Strip_Output;
